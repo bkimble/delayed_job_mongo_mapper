@@ -1,31 +1,37 @@
-GIT
-  remote: git://github.com/collectiveidea/delayed_job.git
-  revision: fcca64c20c60b5d93d2ca7ad416ae30e33e588e7
+PATH
+  remote: .
   specs:
-    delayed_job (2.1.1)
-      activesupport (~> 3.0)
-      daemons
+    delayed_job_mongo_mapper (1.0.0)
+      delayed_job (~> 2.1.1)
+      mongo_mapper (~> 0.9.0)
 
 GEM
   remote: http://rubygems.org/
   specs:
-    activesupport (3.0.3)
-    bson (1.1.2)
-    bson_ext (1.1.2)
-    daemons (1.1.0)
+    SystemTimer (1.2.3)
+    activemodel (3.0.9)
+      activesupport (= 3.0.9)
+      builder (~> 2.1.2)
+      i18n (~> 0.5.0)
+    activesupport (3.0.9)
+    bson (1.3.1)
+    bson_ext (1.3.1)
+    builder (2.1.2)
+    daemons (1.1.4)
+    delayed_job (2.1.4)
+      activesupport (~> 3.0)
+      daemons
     diff-lcs (1.1.2)
-    i18n (0.4.2)
-    jnunemaker-validatable (1.8.4)
-      activesupport (>= 2.3.4)
-    mongo (1.1.2)
-      bson (>= 1.1.1)
-    mongo_mapper (0.8.6)
-      activesupport (>= 2.3.4)
-      jnunemaker-validatable (~> 1.8.4)
-      plucky (~> 0.3.6)
-    plucky (0.3.6)
-      mongo (~> 1.1)
-    rake (0.8.7)
+    i18n (0.5.0)
+    mongo (1.3.1)
+      bson (>= 1.3.1)
+    mongo_mapper (0.9.1)
+      activemodel (~> 3.0)
+      activesupport (~> 3.0)
+      plucky (~> 0.3.8)
+    plucky (0.3.8)
+      mongo (~> 1.3)
+    rake (0.9.2)
     rspec (2.1.0)
       rspec-core (~> 2.1.0)
       rspec-expectations (~> 2.1.0)
@@ -34,14 +40,15 @@ GEM
     rspec-expectations (2.1.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.1.0)
+    tzinfo (0.3.28)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  SystemTimer
   bson_ext
-  delayed_job!
-  i18n
-  mongo_mapper
+  delayed_job_mongo_mapper!
   rake
-  rspec
+  rspec (>= 2.0)
+  tzinfo
