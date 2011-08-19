@@ -42,13 +42,13 @@ module Delayed
             :sort => [[:priority, 1], [:run_at, 1]]
           }
 
-          where = "this.locked_at == null || this.locked_at < #{make_date(right_now - max_run_time)}"
+          locked_at = { "$or" => [ {:locked_at => nil}, { :locked_at => {"$lt" => Time.at(right_now - max_run_time.to_i)}} ] }
 
           (conditions[:priority] ||= {})['$gte'] = Worker.min_priority.to_i if Worker.min_priority
           (conditions[:priority] ||= {})['$lte'] = Worker.max_priority.to_i if Worker.max_priority
 
-          results = all(conditions.merge(:locked_by => worker_name))
-          results += all(conditions.merge('$where' => where)) if results.size < limit
+          results  = all(conditions.merge(:locked_by => worker_name))
+          results += all(conditions.merge(locked_at)) if results.size < limit
           results
         end
 
@@ -60,11 +60,11 @@ module Delayed
         # Lock this job for this worker.
         # Returns true if we have the lock, false otherwise.
         def lock_exclusively!(max_run_time, worker = worker_name)
-          right_now = self.class.db_time_now
-          overtime = right_now - max_run_time.to_i
+          right_now  = self.class.db_time_now
+          overtime   = right_now - max_run_time.to_i
 
-          query = "this.locked_at == null || this.locked_at < #{make_date(overtime)} || this.locked_by == #{worker.to_json}"
-          conditions = {:_id => id, :run_at => {"$lte" => right_now}, "$where" => query}
+          locked_at  = { "$or" => [ {:locked_at => nil}, { :locked_at => {"$lt" => Time.at(overtime)} }, {:locked_at => worker.to_json} ] }
+          conditions = {:_id => id, :run_at => {"$lte" => right_now}}.merge(locked_at)
 
           collection.update(conditions, {"$set" => {:locked_at => right_now, :locked_by => worker}})
           affected_rows = self.collection.find({:_id => id, :locked_by => worker}).count
