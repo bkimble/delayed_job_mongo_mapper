@@ -63,7 +63,7 @@ module Delayed
           right_now  = self.class.db_time_now
           overtime   = right_now - max_run_time.to_i
 
-          locked_at  = { "$or" => [ {:locked_at => nil}, { :locked_at => {"$lt" => Time.at(overtime)} }, {:locked_at => worker.to_json} ] }
+          locked_at  = { "$or" => [ {:locked_at => nil}, { :locked_at => {"$lt" => Time.at(overtime)} }, {:locked_by => worker.to_json} ] }
           conditions = {:_id => id, :run_at => {"$lte" => right_now}}.merge(locked_at)
 
           collection.update(conditions, {"$set" => {:locked_at => right_now, :locked_by => worker}})
